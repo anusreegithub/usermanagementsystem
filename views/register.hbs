@@ -1,0 +1,107 @@
+<link rel="stylesheet"  type="text/css" href="/styles/userlogin.css">
+
+<div class="container">
+  <form id="registerForm" method="post" action="/register">
+    <div class="title">Register</div>
+
+   
+     <div class="input-box" >
+        <select class="form-control" name="role" id="role" style="width: 100%;border: 1px solid  #bb1f6d;color">
+            <option value="0">Select</option>
+            <option value="1">Admin</option>
+            <option value="2">User</option>
+        </select>
+        
+    </div>
+    <div class="input-box">
+      <input type="text" name="firstname" , id="firstname" placeholder="Enter Your Name">
+      <div class="underline"></div>
+    </div>
+    <div class="input-box underline">
+      <input type="text" name="email" id="email" placeholder="Enter Your Email">
+      <div class="underline"></div>
+    </div>
+    <div class="input-box">
+      <input type="phonenumber" name="phonenumber" id="phonenumber" placeholder="Enter Your Phone number">
+      <div class="underline"></div>
+    </div>
+
+
+
+
+    <div class="input-box">
+      <input type="username" name="username" id="username" placeholder="Enter Your Username">
+      <div class="underline"></div>
+    </div>
+    <div class="input-box">
+      <input type="password" name="password" id="new-password" placeholder="Enter Your Password">
+
+
+      <div class="underline"></div>
+    </div>
+
+   
+
+    <div class="input-box">
+      <input type="password" name="confirmpassword" id="confirmpassword" placeholder="Confirm Your Password">
+      <div class="underline"></div>
+    </div>
+    <div class="input-box button">
+      <input type="submit" name="" value="Register">
+    </div>
+    <input type="text" name="message" id="message" hidden>
+  </form>
+  <p>Already have account? <a href="/login">Login</a></p>
+</div>
+
+<script>
+
+  document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('registerForm').addEventListener('submit', formValidate);
+  })
+
+const message = document.getElementById('message').value;
+if(message){
+  swal(message);
+
+}
+
+  function formValidate(e) {
+    e.preventDefault();
+
+
+    var firstname = document.getElementById('firstname').value;
+    var phonenumber = document.getElementById('phonenumber').value;
+    var email = document.getElementById('email').value;
+    var username = document.getElementById('username').value;
+    var password = document.getElementById('new-password').value;
+    var confirmpassword = document.getElementById('confirmpassword').value;
+   
+
+    console.log(firstname, phonenumber, email, username, password, confirmpassword);
+
+    if (firstname == '' || phonenumber == '' || email == '' || username == '' || password == '' ) {
+      swal({
+        title: "All fields are required",
+        text: "Please fill all the fields",
+        icon: "warning",
+        button: "Back",
+      })
+      return false;
+
+    }
+    else if (password != confirmpassword) {
+      swal({
+        title: "Passwords do not match",
+        text: "Please provide the same password in both fields",
+        icon: "error",
+        button: "Back",
+      })
+      return false;
+    }
+
+    document.getElementById('registerForm').submit();
+
+  }
+
+</script>
