@@ -6,7 +6,7 @@
 
    
      <div class="input-box" >
-        <select class="form-control" name="role" id="role" style="width: 100%;border: 1px solid  #bb1f6d;color">
+        <select  name="role" id="role" style="width: 100%;border: 1px solid  #bb1f6d;color">
             <option value="0">Select</option>
             <option value="1">Admin</option>
             <option value="2">User</option>
@@ -14,7 +14,7 @@
         
     </div>
     <div class="input-box">
-      <input type="text" name="firstname" , id="firstname" placeholder="Enter Your Name">
+      <input type="text" name="firstname" id="firstname" placeholder="Enter Your Name">
       <div class="underline"></div>
     </div>
     <div class="input-box underline">
@@ -76,11 +76,12 @@ if(message){
     var username = document.getElementById('username').value;
     var password = document.getElementById('new-password').value;
     var confirmpassword = document.getElementById('confirmpassword').value;
+    var role = document.getElementById('role').value;
    
 
     console.log(firstname, phonenumber, email, username, password, confirmpassword);
 
-    if (firstname == '' || phonenumber == '' || email == '' || username == '' || password == '' ) {
+    if (firstname == '' || phonenumber == '' || email == '' || username == '' || password == '' , role=='') {
       swal({
         title: "All fields are required",
         text: "Please fill all the fields",

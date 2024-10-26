@@ -55,18 +55,13 @@ const login = async (req, res) => {
     const isPasswodMatch = await bcrypt.compare(password, user.password);
     console.log(isPasswodMatch);
     console.log(user.role);
-    // if (isPasswodMatch) {
-
-    //   return res.render("admin/home", { message: "Logged in successfully" });
-    // } else {
-    //   return res.render("admin/login", { message: "Incorrect password" });
-    // }
+  
     if (user.role === 1 && isPasswodMatch) {
       console.log("logged in");
-      return res.render("admin/home", { message: "Logged in successfully" });
+      return res.redirect("admin/home");
     } else if (user.role === 2 && isPasswodMatch) {
-      return res.render("users/home", { message: "Logged in successfully" });
-    } else {
+      return res.redirect("users/home");
+    } else {  
       console.log("else blvkn");
       return res.render("login", { message: "Logged in successfully" });
     }
@@ -76,7 +71,110 @@ const login = async (req, res) => {
   }
 };
 
+
+
+
+
+
+
+
+const listusers = async (req, res) => {
+  console.log("request", req.body)
+  try {
+    const users = await userSchema.find({role:2});
+
+    const currentUser = req.session.user;
+    console.log("currentUser", currentUser);
+    const user = await userSchema.findOne({ email: req.body.email });
+    console.log(user);
+      return res.render("users/home", { users });
+  
+   
+    
+  }
+
+  catch (error) {
+    console.log(error);
+    res.status(500).send("Internal server error");
+  }
+};
+
+
+const Alllistusers = async (req, res) => {
+  try {
+    const users = await userSchema.find({role:2});
+  
+      return res.render("admin/home", { users });
+   
+  }
+
+  catch (error) {
+    console.log(error);
+    res.status(500).send("Internal server error");
+  }
+};
+
+
+
+const getUserById = async (req, res) => {
+  try {
+   
+    const user = await userSchema.findById(req.params.id);
+    console.log(user);
+    res.render('update', { user });
+
+
+  }
+  catch (error) {
+    console.log(error);
+    res.status(500).send("Internal server error");
+  }
+};
+
+const updateUser = async (req, res) => {
+  try {
+    const { firstname, phonenumber, email, username } = req.body;
+
+    const existingUser = await userSchema.findById(req.params.id);
+    
+
+     await userSchema.findByIdAndUpdate(
+      req.params.id,
+      {
+        firstname: firstname || existingUser.firstname,
+        phonenumber: phonenumber || existingUser.phonenumber,
+        email: email || existingUser.email,
+        username: username || existingUser.username
+      },
+      res.redirect('/admin/home')
+    );
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send("Internal server error");
+
+
+  }
+
+}
+
+const deleteUser = async (req, res) => {
+  try {
+    const user = await userSchema.findByIdAndDelete(req.params.id);
+    res.redirect('/admin/home');
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send("Internal server error");
+  }
+};
+
 module.exports = {
   login,
   register,
-};
+  listusers,
+  updateUser,
+  Alllistusers,
+  getUserById,
+  deleteUser
+
+}
