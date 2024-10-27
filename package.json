@@ -11,11 +11,14 @@
   "description": "",
   "dependencies": {
     "bcrypt": "^5.1.1",
-    "body-parser": "^1.20.3",
+    "connect": "^3.7.0",
+    "connect-mongodb-session": "^5.0.0",
     "express": "^4.21.1",
     "express-session": "^1.18.1",
     "hbs": "^4.2.0",
     "mongodb": "^6.10.0",
-    "mongoose": "^8.7.2"
+    "mongoose": "^8.7.2",
+    "nocache": "^4.0.0",
+    "session": "^0.1.0"
   }
 }

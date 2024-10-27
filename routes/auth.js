@@ -4,6 +4,7 @@ const authController = require('../controllers/authController');
 
 router.get('/login', (req, res) => {
     res.render('login');
+    console.log("session",req.session);
 });
 
 router.get('/register', (req, res) => {
@@ -16,10 +17,10 @@ router.post('/login', authController.login,   (req, res) => {
     res.render('/users/home');
 });
 
-router.get('/users/home', authController.listusers);
+router.get('/users/home',authController.isUser,authController.listusers);
 
 
-router.get('/admin/home', authController.Alllistusers);
+router.get('/admin/home',authController.isAdmin,  authController.Alllistusers);
 
 
 
@@ -30,9 +31,7 @@ router.post('/update/:id', authController.updateUser);
 
 router.get('/delete/:id', authController.deleteUser);
 
-    
-
-
+ router.get('/logout', authController.logout);   
 
 
 module.exports = router;

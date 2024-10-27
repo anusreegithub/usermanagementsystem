@@ -23,9 +23,11 @@ const register = async (req, res) => {
       });
 
       await newUser.save();
-
+      req.session.user = { id: newUser._id, email: newUser.email, role: newUser.role }
       return res.render("login");
     }
+
+    
   } catch (error) {
     console.log(error);
     return res.render("register", { message: "Error registering user" });
@@ -55,6 +57,9 @@ const login = async (req, res) => {
     const isPasswodMatch = await bcrypt.compare(password, user.password);
     console.log(isPasswodMatch);
     console.log(user.role);
+
+    req.session.user = { id: user._id, email: user.email, role: user.role }; 
+    console.log("req.session.user:", req.session.user);
   
     if (user.role === 1 && isPasswodMatch) {
       console.log("logged in");
@@ -62,7 +67,7 @@ const login = async (req, res) => {
     } else if (user.role === 2 && isPasswodMatch) {
       return res.redirect("users/home");
     } else {  
-      console.log("else blvkn");
+      console.log("else block executerd");
       return res.render("login", { message: "Logged in successfully" });
     }
   } catch (error) {
@@ -86,6 +91,7 @@ const listusers = async (req, res) => {
     const currentUser = req.session.user;
     console.log("currentUser", currentUser);
     const user = await userSchema.findOne({ email: req.body.email });
+
     console.log(user);
       return res.render("users/home", { users });
   
@@ -166,7 +172,45 @@ const deleteUser = async (req, res) => {
     console.error(error);
     return res.status(500).send("Internal server error");
   }
+
+  
 };
+
+
+
+const isAdmin = (req, res, next) => {
+  if (req.session.user && req.session.user.role === 1) {
+    return next(); 
+  }
+  return res.status(403).render('login', { message: 'Access Denied: Admins only' });
+};
+
+// Middleware for checking user role
+const isUser = (req, res, next) => {
+  if (req.session.user && req.session.user.role === 2) {
+    return next(); 
+  }
+  return res.status(403).render('login', { message: 'Access Denied: Users only' });
+};
+
+
+const adminHome = (req, res) => {
+  res.render('admin/home', { user: req.session.user });
+};
+
+const userHome = (req, res) => {
+  res.render('users/home', { user: req.session.user });
+};
+const logout = (req, res) => {
+  req.session.destroy((err)=>{
+    if(err){
+      console.log(err);
+    }
+    res.clearCookie('connect.sid');
+    res.redirect('/login');
+  })
+}
+
 
 module.exports = {
   login,
@@ -175,6 +219,11 @@ module.exports = {
   updateUser,
   Alllistusers,
   getUserById,
-  deleteUser
+  deleteUser,
+  isAdmin,
+  isUser,
+  logout,
+  adminHome,
+  userHome
 
 }
