@@ -23,6 +23,7 @@ html, body{
   padding: 25px 30px;
   border-radius: 5px;
   box-shadow: 0 10px 10px rgba(0, 0, 0, 0.15);
+  
 }
 .container form .title{
   font-size: 30px;
@@ -142,4 +143,12 @@ select {
   border-radius:5px;
   padding:10px
  
+}
+
+.swal-overlay {
+  transition: opacity 0.5s ease-in-out; 
+}
+
+.swal-modal {
+  transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
 }

@@ -1,7 +1,7 @@
 <link rel="stylesheet"  type="text/css" href="/styles/userlogin.css">
 
 
-<div class="container">
+<div class="container" style="margin-top: 120px;">
   <form id="loginForm" action="login" method="post">
     <div class="title">Login</div>
     <div class="input-box underline">
@@ -17,7 +17,7 @@
     </div>
      <input type="text" name="message" id="message" hidden>
   </form>
-  <p>Don't have account? <a href="/logout">Register</a></p>
+  <p>Don't have account? <a href="/register">Register</a></p>
 </div>
 
 <script>
@@ -55,16 +55,27 @@
         text: "Please enter a valid password",
         icon: "warning",
         button: "Back",
+        
       })
       return false; 
 
     }
+    else if()
    
 
  
     
 
     document.getElementById('loginForm').submit();
+
+    swal({
+      title: "Login Successful",
+      text: "You have successfully logged in",
+      icon: "success",
+      button: "Ok",
+      timer:2000
+    })
+    
     
   }
   

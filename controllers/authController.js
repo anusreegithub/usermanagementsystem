@@ -6,7 +6,7 @@ const register = async (req, res) => {
   try {
     const { firstname, phonenumber, email, username, password, role } =
       req.body;
-    //  console.log(req.body)
+
     const user = await userSchema.findOne({ email });
     if (user) {
       return res.render("register", { message: "user already exist" });
@@ -23,11 +23,15 @@ const register = async (req, res) => {
       });
 
       await newUser.save();
-      req.session.user = { id: newUser._id, email: newUser.email, role: newUser.role }
-      return res.render("login");
+      req.session.user = {
+        id: newUser._id,
+        email: newUser.email,
+        role: newUser.role,
+      };
+      return setTimeout(() => {
+        res.render("login");
+      }, 3000);
     }
-
-    
   } catch (error) {
     console.log(error);
     return res.render("register", { message: "Error registering user" });
@@ -35,16 +39,16 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  console.log("requesr", req.body);
-  try {
-    const { email, password } = req.body;
+  const { email, password } = req.body;
 
+  try {
     if (!email || !password) {
       console.log("Email and password are required");
       return res.render("/login", {
         message: "Email and password are required",
       });
     }
+
 
     const user = await userSchema.findOne({ email });
     console.log("user", user.role);
@@ -58,15 +62,19 @@ const login = async (req, res) => {
     console.log(isPasswodMatch);
     console.log(user.role);
 
-    req.session.user = { id: user._id, email: user.email, role: user.role }; 
+    req.session.user = { id: user._id, email: user.email, role: user.role };
     console.log("req.session.user:", req.session.user);
-  
+
     if (user.role === 1 && isPasswodMatch) {
       console.log("logged in");
-      return res.redirect("admin/home");
+      return setTimeout(() => {
+        res.redirect("admin/home");
+      }, 3000);
     } else if (user.role === 2 && isPasswodMatch) {
-      return res.redirect("users/home");
-    } else {  
+      return setTimeout(() => {
+        res.redirect("users/home");
+      }, 3000);
+    } else {
       console.log("else block executerd");
       return res.render("login", { message: "Logged in successfully" });
     }
@@ -76,62 +84,40 @@ const login = async (req, res) => {
   }
 };
 
-
-
-
-
-
-
-
 const listusers = async (req, res) => {
-  console.log("request", req.body)
+  console.log("request", req.body);
   try {
-    const users = await userSchema.find({role:2});
+    const users = await userSchema.find({ role: 2 });
 
     const currentUser = req.session.user;
     console.log("currentUser", currentUser);
     const user = await userSchema.findOne({ email: req.body.email });
 
     console.log(user);
-      return res.render("users/home", { users });
-  
-   
-    
-  }
-
-  catch (error) {
+    return res.render("users/home", { users });
+  } catch (error) {
     console.log(error);
     res.status(500).send("Internal server error");
   }
 };
-
 
 const Alllistusers = async (req, res) => {
   try {
-    const users = await userSchema.find({role:2});
-  
-      return res.render("admin/home", { users });
-   
-  }
+    const users = await userSchema.find({ role: 2 });
 
-  catch (error) {
+    return res.render("admin/home", { users });
+  } catch (error) {
     console.log(error);
     res.status(500).send("Internal server error");
   }
 };
 
-
-
 const getUserById = async (req, res) => {
   try {
-   
     const user = await userSchema.findById(req.params.id);
     console.log(user);
-    res.render('update', { user });
-
-
-  }
-  catch (error) {
+    res.render("update", { user });
+  } catch (error) {
     console.log(error);
     res.status(500).send("Internal server error");
   }
@@ -142,75 +128,69 @@ const updateUser = async (req, res) => {
     const { firstname, phonenumber, email, username } = req.body;
 
     const existingUser = await userSchema.findById(req.params.id);
-    
 
-     await userSchema.findByIdAndUpdate(
+    await userSchema.findByIdAndUpdate(
       req.params.id,
       {
         firstname: firstname || existingUser.firstname,
         phonenumber: phonenumber || existingUser.phonenumber,
         email: email || existingUser.email,
-        username: username || existingUser.username
+        username: username || existingUser.username,
       },
-      res.redirect('/admin/home')
+      res.redirect("/admin/home")
     );
-
   } catch (error) {
     console.error(error);
     return res.status(500).send("Internal server error");
-
-
   }
-
-}
+};
 
 const deleteUser = async (req, res) => {
   try {
     const user = await userSchema.findByIdAndDelete(req.params.id);
-    res.redirect('/admin/home');
+    res.redirect("/admin/home");
   } catch (error) {
     console.error(error);
     return res.status(500).send("Internal server error");
   }
-
-  
 };
-
-
 
 const isAdmin = (req, res, next) => {
   if (req.session.user && req.session.user.role === 1) {
-    return next(); 
+    return next();
   }
-  return res.status(403).render('login', { message: 'Access Denied: Admins only' });
+  return res
+    .status(403)
+    .render("login", { message: "Access Denied: Admins only" });
 };
 
 // Middleware for checking user role
 const isUser = (req, res, next) => {
   if (req.session.user && req.session.user.role === 2) {
-    return next(); 
+    return next();
   }
-  return res.status(403).render('login', { message: 'Access Denied: Users only' });
+  return res
+    .status(403)
+    .render("login", { message: "Access Denied: Users only" });
 };
 
-
 const adminHome = (req, res) => {
-  res.render('admin/home', { user: req.session.user });
+  res.render("admin/home", { user: req.session.user });
 };
 
 const userHome = (req, res) => {
-  res.render('users/home', { user: req.session.user });
+  res.render("users/home", { user: req.session.user });
 };
 const logout = (req, res) => {
-  req.session.destroy((err)=>{
-    if(err){
-      console.log(err);
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Error destroying session:", err);
+      return res.status(500).send("Internal Server Error"); 
     }
-    res.clearCookie('connect.sid');
-    res.redirect('/login');
-  })
-}
-
+    res.clearCookie("connect.sid");
+    res.redirect("/");
+  });
+};
 
 module.exports = {
   login,
@@ -224,6 +204,5 @@ module.exports = {
   isUser,
   logout,
   adminHome,
-  userHome
-
-}
+  userHome,
+};

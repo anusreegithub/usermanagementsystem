@@ -51,7 +51,7 @@
     </div>
     <input type="text" name="message" id="message" hidden>
   </form>
-  <p>Already have account? <a href="/login">Login</a></p>
+  <p>Already have account? <a href="/">Login</a></p>
 </div>
 
 <script>
@@ -81,7 +81,7 @@ if(message){
 
     console.log(firstname, phonenumber, email, username, password, confirmpassword);
 
-    if (firstname == '' || phonenumber == '' || email == '' || username == '' || password == '' , role=='') {
+    if (firstname === '' || phonenumber =='' || email == '' || username == '' || password == '' || role=='') {
       swal({
         title: "All fields are required",
         text: "Please fill all the fields",
@@ -100,8 +100,45 @@ if(message){
       })
       return false;
     }
+    else if (password.length < 6 || password.length > 20 ) {
+      swal({
+        title: "Password must be between 6 and 20 characters",
+        text: "Please provide a valid password",
+        icon: "error",
+        button: "Back",
+      })
+      return false;
+    }
+    
+    else if(phonenumber.length != 10){
+      swal({
+        title: "Phone number must be 10 digits",
+        text: "Please provide a valid phone number",
+        icon: "error",
+        button: "Back",
+      })
+      return false;
+    }
+    else if (email.indexOf("@") == -1 || email.indexOf(".") == -1) {
+      swal({
+        title: "Invalid email",
+        text: "Please provide a valid email address",
+        icon: "error",
+        button: "Back",
+      })
+      return false;
+    }
+   
 
     document.getElementById('registerForm').submit();
+
+    swal({
+      title: "Registered successfully",
+      text: "You can now login",
+      icon: "success",
+      button: "Login",
+      timer:2000
+    })
 
   }
 
